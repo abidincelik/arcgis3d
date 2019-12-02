@@ -6,9 +6,17 @@ export class WebMapView extends React.Component {
   constructor(props) {
     super(props);
     this.mapRef = React.createRef();
+    this.state = {
+      ilceselect: '',
+      mahalleselect: '',
+      yolselect: '',
+    }
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
+
+    var self = this;
+
     loadCss('https://js.arcgis.com/4.13/esri/themes/dark-blue/main.css');
 
     loadModules([
@@ -202,15 +210,170 @@ export class WebMapView extends React.Component {
           })
         });
 
-        var query = yollar.createQuery();
-        query.outFields = ["ILCEADI"];
-        query.returnGeometry = false;
-        query.returnDistinctValues = true;
+        var ilceadiQuery = yollar.createQuery();
+        ilceadiQuery.outFields = ["ILCEADI"];
+        ilceadiQuery.returnGeometry = false;
+        ilceadiQuery.returnDistinctValues = true;
 
-        yollar.queryFeatures(query)
+        yollar.queryFeatures(ilceadiQuery)
           .then(function (response) {
-            console.log(response.features[0].attributes.ILCEADI)
+
+            for (let index = 0; index < response.features.length; index++) {
+              const element = response.features[index].attributes.ILCEADI;
+              const s = document.createElement('option');
+              s.value = element;
+              s.innerText = element;
+              document.getElementById("ilceSelect").appendChild(s);
+
+            }
           });
+
+        var mahalleQuery = yollar.createQuery();
+        mahalleQuery.outFields = ["MAHALLEADI"];
+        mahalleQuery.returnGeometry = false;
+        mahalleQuery.returnDistinctValues = true;
+
+        yollar.queryFeatures(mahalleQuery)
+          .then(function (response) {
+
+            for (let index = 0; index < response.features.length; index++) {
+              const element = response.features[index].attributes.MAHALLEADI;
+              const s = document.createElement('option');
+              s.value = element;
+              s.innerText = element;
+              document.getElementById("mahalleSelect").appendChild(s);
+
+            }
+          });
+
+        var yoladiQuery = yollar.createQuery();
+        yoladiQuery.outFields = ["YOLADI"];
+        yoladiQuery.returnGeometry = false;
+        yoladiQuery.returnDistinctValues = true;
+
+        yollar.queryFeatures(yoladiQuery)
+          .then(function (response) {
+
+            for (let index = 0; index < response.features.length; index++) {
+              const element = response.features[index].attributes.YOLADI;
+              const s = document.createElement('option');
+              s.value = element;
+              s.innerText = element;
+              document.getElementById("yolSelect").appendChild(s);
+
+            }
+          });
+
+        document.getElementById("ilceSelect").addEventListener("change", ilceSelectFunction);
+        document.getElementById("mahalleSelect").addEventListener("change", mahalleSelectFunction);
+        document.getElementById("yolSelect").addEventListener("change", yolSelectFunction);
+
+        function ilceSelectFunction() {
+          self.setState({
+            ilceselect: document.getElementById("ilceSelect").value
+          })
+          document.getElementById("mahalleSelect").innerHTML = '';
+          document.getElementById("yolSelect").innerHTML = '';
+
+          var mahalleQuery = yollar.createQuery();
+          if (self.state.ilceselect !== '') {
+            mahalleQuery.where = "ILCEADI ='" + self.state.ilceselect + "'";
+          }
+          mahalleQuery.outFields = ["MAHALLEADI"];
+          mahalleQuery.returnGeometry = false;
+          mahalleQuery.returnDistinctValues = true;
+
+          yollar.queryFeatures(mahalleQuery)
+            .then(function (response) {
+
+              const s = document.createElement('option');
+              s.value = "";
+              s.innerText = "TÜMÜ";
+              document.getElementById("mahalleSelect").appendChild(s);
+
+              for (let index = 0; index < response.features.length; index++) {
+                const element = response.features[index].attributes.MAHALLEADI;
+                const s = document.createElement('option');
+                s.value = element;
+                s.innerText = element;
+                document.getElementById("mahalleSelect").appendChild(s);
+
+              }
+            });
+
+          var yoladiQuery = yollar.createQuery();
+          if (self.state.ilceselect !== '') {
+            yoladiQuery.where = "ILCEADI ='" + self.state.ilceselect + "'";
+          }
+          if (self.state.mahalleselect !== '') {
+            yoladiQuery.where = "MAHALLEADI ='" + self.state.mahalleselect + "'";
+          }
+          yoladiQuery.outFields = ["YOLADI"];
+          yoladiQuery.returnGeometry = false;
+          yoladiQuery.returnDistinctValues = true;
+
+          yollar.queryFeatures(yoladiQuery)
+            .then(function (response) {
+
+              const s = document.createElement('option');
+              s.value = "";
+              s.innerText = "TÜMÜ";
+              document.getElementById("yolSelect").appendChild(s);
+
+              for (let index = 0; index < response.features.length; index++) {
+                const element = response.features[index].attributes.YOLADI;
+                const s = document.createElement('option');
+                s.value = element;
+                s.innerText = element;
+                document.getElementById("yolSelect").appendChild(s);
+
+              }
+            });
+        };
+
+        function mahalleSelectFunction() {
+          self.setState({
+            mahalleselect: document.getElementById("mahalleSelect").value
+          })
+
+          document.getElementById("yolSelect").innerHTML = '';
+
+          var yoladiQuery = yollar.createQuery();
+          if (self.state.ilceselect !== '') {
+            yoladiQuery.where = "ILCEADI ='" + self.state.ilceselect + "'";
+          }
+          if (self.state.mahalleselect !== '') {
+            yoladiQuery.where = "MAHALLEADI ='" + self.state.mahalleselect + "'";
+          }
+          yoladiQuery.outFields = ["YOLADI"];
+          yoladiQuery.returnGeometry = false;
+          yoladiQuery.returnDistinctValues = true;
+
+          yollar.queryFeatures(yoladiQuery)
+            .then(function (response) {
+
+              const s = document.createElement('option');
+              s.value = "";
+              s.innerText = "TÜMÜ";
+              document.getElementById("yolSelect").appendChild(s);
+
+              for (let index = 0; index < response.features.length; index++) {
+                const element = response.features[index].attributes.YOLADI;
+                const s = document.createElement('option');
+                s.value = element;
+                s.innerText = element;
+                document.getElementById("yolSelect").appendChild(s);
+
+              }
+            });
+
+        };
+
+        function yolSelectFunction() {
+          self.setState({
+            yolselect: document.getElementById("yolSelect").value
+          })
+        };
 
         var logovisible = document.getElementById("logoDiv")
         logovisible.style.display = "block";
@@ -232,28 +395,24 @@ export class WebMapView extends React.Component {
           backgroundImage: `url(${LogoImage})`, textAlign: 'center',
           width: '90px', height: '90px', boxShadow: '0 0 0', display: 'none'
         }}>
-          <div class="esri-widget" id="optionsDiv" style={{ padding: '10px', width: '300px' }}>
+          <div className="esri-widget" id="optionsDiv" style={{ padding: '10px', width: '300px' }}>
             <h3>Sorgu</h3>
-            <select class="esri-select" id="attSelect">
-              <option className="item" value="ELEV_ft"></option>
-              <option value="PROMINENCE_ft" selected>İLÇE</option>
+            <label>İlçe</label>
+            <select className="esri-select" id="ilceSelect" defaultValue={''}>
+              <option value="">TÜMÜ</option>
             </select>
             <br />
-            <select class="esri-select" id="signSelect">
-              <option value=">">MAHALLE</option>
-              <option value="<">is less than</option>
-              <option value="=">is equal to</option>
+            <label>Mahalle</label>
+            <select className="esri-select" id="mahalleSelect" defaultValue={''}>
+              <option value="">TÜMÜ</option>
             </select>
             <br />
-            <select class="esri-select" id="valSelect">
-              <option value="1000">YOL</option>
-              <option value="5000">5,000 ft</option>
-              <option value="10000">10,000 ft</option>
-              <option value="15000">15,000 ft</option>
-              <option value="20000">20,000 ft</option>
+            <label>Yol</label>
+            <select className="esri-select" id="yolSelect" defaultValue={''}>
+              <option value="">TÜMÜ</option>
             </select>
             <br />
-            <button class="esri-button" id="doBtn">Sonuçları Göster</button>
+            <button className="esri-button" id="yolSorguButton">Sonuçları Göster</button>
           </div>
 
         </div>
