@@ -407,19 +407,13 @@ export class WebMapView extends React.Component {
 
           var gotoQuery = yollar.createQuery();
           gotoQuery.where = "YOLADI = '" + self.state.yolselect + "'"
-          console.log(self.state.yolselect)
 
           yollar.queryFeatures(gotoQuery)
             .then(function (response) {
               self.view.goTo({
                 target: response.features[0],
               });
-              console.log(response.features[0])
-
             });
-
-
-
         };
 
         var logovisible = document.getElementById("logoDiv")
