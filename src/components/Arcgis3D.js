@@ -182,6 +182,7 @@ export class WebMapView extends React.Component {
         var LayerExpand = new Expand({
           view: this.view,
           content: Katmanlar,
+          group: "top-right"
         });
 
         var legend = new Legend({
@@ -194,11 +195,13 @@ export class WebMapView extends React.Component {
         var LegendExpand = new Expand({
           view: this.view,
           content: legend,
+          group: "top-right"
         });
 
         var SorguExpand = new Expand({
           view: this.view,
           content: document.getElementById("optionsDiv"),
+          group: "top-right"
         });
 
         var locateWidget = new Locate({
@@ -216,7 +219,7 @@ export class WebMapView extends React.Component {
             yolselect: ''
           })
 
-          if(yolsecim){
+          if (yolsecim) {
             yolsecim.remove();
           }
 
@@ -414,7 +417,7 @@ export class WebMapView extends React.Component {
           yollar.queryFeatures(gotoQuery)
             .then(function (response) {
               self.view.goTo(response.features).then(function () {
-               
+
                 yolSecim(response.features[0].attributes.OBJECTID)
 
               });
@@ -422,10 +425,10 @@ export class WebMapView extends React.Component {
             });
         };
 
-        function yolSecim(objectid) {  
-          
+        function yolSecim(objectid) {
+
           self.view.whenLayerView(yollar).then(function (layerView) {
-            if(yolsecim){
+            if (yolsecim) {
               yolsecim.remove();
             }
             yolsecim = layerView.highlight(
@@ -439,10 +442,7 @@ export class WebMapView extends React.Component {
 
         this.view.ui.add("logoDiv", "bottom-right");
         this.view.ui.add(locateWidget, "top-left");
-        this.view.ui.add(LegendExpand, "top-right");
-        this.view.ui.add(LayerExpand, "top-right")
-        this.view.ui.add(SorguExpand, "top-right");
-
+        this.view.ui.add([LegendExpand, LayerExpand, SorguExpand], "top-right");
       });
   }
 
