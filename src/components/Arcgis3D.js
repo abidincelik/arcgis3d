@@ -114,8 +114,10 @@ export class WebMapView extends React.Component {
               z: 15000
             },
             tilt: 25
-          }
+          },
         });
+
+        var yolsecim;
 
         var symbolbinalar = {
           type: "mesh-3d",
@@ -173,10 +175,6 @@ export class WebMapView extends React.Component {
           type: "simple"
         };
 
-        var search = new Search({
-          view: this.view
-        });
-
         var Katmanlar = new LayerList({
           view: this.view,
         });
@@ -213,10 +211,15 @@ export class WebMapView extends React.Component {
         function yolSorguInit() {
 
           self.setState({
-            ilceselect : '',
-            mahalleselect : '',
-            yolselect : ''
+            ilceselect: '',
+            mahalleselect: '',
+            yolselect: ''
           })
+
+          if(yolsecim){
+            yolsecim.remove();
+          }
+
           document.getElementById("ilceSelect").innerHTML = '';
           document.getElementById("mahalleSelect").innerHTML = '';
           document.getElementById("yolSelect").innerHTML = '';
@@ -410,10 +413,25 @@ export class WebMapView extends React.Component {
 
           yollar.queryFeatures(gotoQuery)
             .then(function (response) {
-              self.view.goTo({
-                target: response.features[0],
+              self.view.goTo(response.features).then(function () {
+               
+                yolSecim(response.features[0].attributes.OBJECTID)
+
               });
+
             });
+        };
+
+        function yolSecim(objectid) {  
+          
+          self.view.whenLayerView(yollar).then(function (layerView) {
+            if(yolsecim){
+              yolsecim.remove();
+            }
+            yolsecim = layerView.highlight(
+              objectid
+            );
+          });
         };
 
         var logovisible = document.getElementById("logoDiv")
@@ -421,7 +439,6 @@ export class WebMapView extends React.Component {
 
         this.view.ui.add("logoDiv", "bottom-right");
         this.view.ui.add(locateWidget, "top-left");
-        this.view.ui.add(search, "top-right");
         this.view.ui.add(LegendExpand, "top-right");
         this.view.ui.add(LayerExpand, "top-right")
         this.view.ui.add(SorguExpand, "top-right");
