@@ -109,6 +109,7 @@ export class WebMapView extends React.Component {
             title: "Üst Yapı Bilgileri",
             content: "<p>Yapı Cinsi : {CINS}</p><p>Yapı Adı : {ADI}</p>"
           },
+          labelingInfo: false
         });
 
         map.add(binalar);
