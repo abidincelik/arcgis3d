@@ -100,9 +100,21 @@ export class WebMapView extends React.Component {
           },
 
         });
+
+        var muskiustuapi = new FeatureLayer({
+          title: "Muski Üst Yapı",
+          url: "https://cbs.muski.gov.tr/arcgis/rest/services/CANLI/UST_YAPI/MapServer/0",
+          outFields: ["ADI", "CINS"],
+          popupTemplate: {
+            title: "Üst Yapı Bilgileri",
+            content: "<p>Yapı Cinsi : {CINS}</p><p>Yapı Adı : {ADI}</p>"
+          },
+        });
+
         map.add(binalar);
         map.add(yollar);
         map.add(kapinumaralari);
+        map.add(muskiustuapi);
 
         this.view = new SceneView({
           container: this.mapRef.current,
