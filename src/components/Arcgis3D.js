@@ -231,6 +231,7 @@ export class WebMapView extends React.Component {
           ilceadiQuery.outFields = ["ILCEADI"];
           ilceadiQuery.returnGeometry = false;
           ilceadiQuery.returnDistinctValues = true;
+          ilceadiQuery.orderByFields = ["ILCEADI ASC"];
 
           yollar.queryFeatures(ilceadiQuery)
             .then(function (response) {
@@ -254,6 +255,7 @@ export class WebMapView extends React.Component {
           mahalleQuery.outFields = ["MAHALLEADI"];
           mahalleQuery.returnGeometry = false;
           mahalleQuery.returnDistinctValues = true;
+          mahalleQuery.orderByFields = ["MAHALLEADI ASC"];
 
           yollar.queryFeatures(mahalleQuery)
             .then(function (response) {
@@ -277,6 +279,7 @@ export class WebMapView extends React.Component {
           yoladiQuery.outFields = ["YOLADI"];
           yoladiQuery.returnGeometry = false;
           yoladiQuery.returnDistinctValues = true;
+          yoladiQuery.orderByFields = ["YOLADI ASC"];
 
           yollar.queryFeatures(yoladiQuery)
             .then(function (response) {
@@ -319,6 +322,7 @@ export class WebMapView extends React.Component {
           mahalleQuery.outFields = ["MAHALLEADI"];
           mahalleQuery.returnGeometry = false;
           mahalleQuery.returnDistinctValues = true;
+          mahalleQuery.orderByFields = ["MAHALLEADI ASC"];
 
           yollar.queryFeatures(mahalleQuery)
             .then(function (response) {
@@ -348,6 +352,7 @@ export class WebMapView extends React.Component {
           yoladiQuery.outFields = ["YOLADI"];
           yoladiQuery.returnGeometry = false;
           yoladiQuery.returnDistinctValues = true;
+          yoladiQuery.orderByFields = ["YOLADI ASC"];
 
           yollar.queryFeatures(yoladiQuery)
             .then(function (response) {
@@ -385,6 +390,7 @@ export class WebMapView extends React.Component {
           yoladiQuery.outFields = ["YOLADI"];
           yoladiQuery.returnGeometry = false;
           yoladiQuery.returnDistinctValues = true;
+          yoladiQuery.orderByFields = ["YOLADI ASC"];
 
           yollar.queryFeatures(yoladiQuery)
             .then(function (response) {
