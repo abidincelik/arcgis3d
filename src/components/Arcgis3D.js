@@ -423,22 +423,18 @@ export class WebMapView extends React.Component {
           yollar.queryFeatures(gotoQuery)
             .then(function (response) {
               self.view.goTo(response.features).then(function () {
-
-                yolSecim(response.features[0].attributes.OBJECTID)
-
+                yolSecim(response.features)
               });
-
             });
         };
 
-        function yolSecim(objectid) {
-
+        function yolSecim(features) {
           self.view.whenLayerView(yollar).then(function (layerView) {
             if (yolsecim) {
               yolsecim.remove();
             }
             yolsecim = layerView.highlight(
-              objectid
+              features
             );
           });
         };
