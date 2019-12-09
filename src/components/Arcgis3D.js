@@ -238,7 +238,9 @@ export class WebMapView extends React.Component {
 
           document.getElementById("ilceSelect").innerHTML = '';
           document.getElementById("mahalleSelect").innerHTML = '';
+          document.getElementById("mahalleSelect").disabled = true;
           document.getElementById("yolSelect").innerHTML = '';
+          document.getElementById("yolSelect").disabled = true;
 
           var ilceadiQuery = yollar.createQuery();
           ilceadiQuery.outFields = ["ILCEADI"];
@@ -249,10 +251,10 @@ export class WebMapView extends React.Component {
           yollar.queryFeatures(ilceadiQuery)
             .then(function (response) {
 
-              const s = document.createElement('option');
-              s.value = "";
-              s.innerText = "TÜMÜ";
-              document.getElementById("ilceSelect").appendChild(s);
+              const ilceelement = document.createElement('option');
+              ilceelement.value = "";
+              ilceelement.innerText = "İlçe Seçin";
+              document.getElementById("ilceSelect").appendChild(ilceelement);
 
               for (let index = 0; index < response.features.length; index++) {
                 const element = response.features[index].attributes.ILCEADI;
@@ -264,53 +266,16 @@ export class WebMapView extends React.Component {
               }
             });
 
-          var mahalleQuery = yollar.createQuery();
-          mahalleQuery.outFields = ["MAHALLEADI"];
-          mahalleQuery.returnGeometry = false;
-          mahalleQuery.returnDistinctValues = true;
-          mahalleQuery.orderByFields = ["MAHALLEADI ASC"];
+          const mahalleelement = document.createElement('option');
+          mahalleelement.value = "";
+          mahalleelement.innerText = "Mahalle Seçin";
+          document.getElementById("mahalleSelect").appendChild(mahalleelement);
 
-          yollar.queryFeatures(mahalleQuery)
-            .then(function (response) {
+          const yolelement = document.createElement('option');
+          yolelement.value = "";
+          yolelement.innerText = "Yol Seçin";
+          document.getElementById("yolSelect").appendChild(yolelement);
 
-              const s = document.createElement('option');
-              s.value = "";
-              s.innerText = "TÜMÜ";
-              document.getElementById("mahalleSelect").appendChild(s);
-
-              for (let index = 0; index < response.features.length; index++) {
-                const element = response.features[index].attributes.MAHALLEADI;
-                const s = document.createElement('option');
-                s.value = element;
-                s.innerText = element;
-                document.getElementById("mahalleSelect").appendChild(s);
-
-              }
-            });
-
-          var yoladiQuery = yollar.createQuery();
-          yoladiQuery.outFields = ["YOLADI"];
-          yoladiQuery.returnGeometry = false;
-          yoladiQuery.returnDistinctValues = true;
-          yoladiQuery.orderByFields = ["YOLADI ASC"];
-
-          yollar.queryFeatures(yoladiQuery)
-            .then(function (response) {
-
-              const s = document.createElement('option');
-              s.value = "";
-              s.innerText = "TÜMÜ";
-              document.getElementById("yolSelect").appendChild(s);
-
-              for (let index = 0; index < response.features.length; index++) {
-                const element = response.features[index].attributes.YOLADI;
-                const s = document.createElement('option');
-                s.value = element;
-                s.innerText = element;
-                document.getElementById("yolSelect").appendChild(s);
-
-              }
-            });
         };
 
         yolSorguInit();
@@ -326,7 +291,13 @@ export class WebMapView extends React.Component {
             ilceselect: document.getElementById("ilceSelect").value
           })
           document.getElementById("mahalleSelect").innerHTML = '';
+          if (document.getElementById("ilceSelect").value === '') {
+            document.getElementById("mahalleSelect").disabled = true;
+          } else {
+            document.getElementById("mahalleSelect").disabled = false;
+          }
           document.getElementById("yolSelect").innerHTML = '';
+          document.getElementById("yolSelect").disabled = true;
 
           var mahalleQuery = yollar.createQuery();
           if (self.state.ilceselect !== '') {
@@ -340,10 +311,10 @@ export class WebMapView extends React.Component {
           yollar.queryFeatures(mahalleQuery)
             .then(function (response) {
 
-              const s = document.createElement('option');
-              s.value = "";
-              s.innerText = "TÜMÜ";
-              document.getElementById("mahalleSelect").appendChild(s);
+              const mahalleelement = document.createElement('option');
+              mahalleelement.value = "";
+              mahalleelement.innerText = "Mahalle Seçin";
+              document.getElementById("mahalleSelect").appendChild(mahalleelement);
 
               for (let index = 0; index < response.features.length; index++) {
                 const element = response.features[index].attributes.MAHALLEADI;
@@ -355,35 +326,11 @@ export class WebMapView extends React.Component {
               }
             });
 
-          var yoladiQuery = yollar.createQuery();
-          if (self.state.ilceselect !== '') {
-            yoladiQuery.where = "ILCEADI ='" + self.state.ilceselect + "'";
-          }
-          if (self.state.mahalleselect !== '') {
-            yoladiQuery.where = "MAHALLEADI ='" + self.state.mahalleselect + "'";
-          }
-          yoladiQuery.outFields = ["YOLADI"];
-          yoladiQuery.returnGeometry = false;
-          yoladiQuery.returnDistinctValues = true;
-          yoladiQuery.orderByFields = ["YOLADI ASC"];
-
-          yollar.queryFeatures(yoladiQuery)
-            .then(function (response) {
-
-              const s = document.createElement('option');
-              s.value = "";
-              s.innerText = "TÜMÜ";
-              document.getElementById("yolSelect").appendChild(s);
-
-              for (let index = 0; index < response.features.length; index++) {
-                const element = response.features[index].attributes.YOLADI;
-                const s = document.createElement('option');
-                s.value = element;
-                s.innerText = element;
-                document.getElementById("yolSelect").appendChild(s);
-
-              }
-            });
+          const yolelement = document.createElement('option');
+          yolelement.value = "";
+          yolelement.innerText = "Yol Seçin";
+          document.getElementById("yolSelect").appendChild(yolelement);
+          
         };
 
         function mahalleSelectFunction() {
@@ -391,15 +338,16 @@ export class WebMapView extends React.Component {
             mahalleselect: document.getElementById("mahalleSelect").value
           })
 
+          if (document.getElementById("mahalleSelect").value === '') {
+            document.getElementById("yolSelect").disabled = true;
+          } else {
+            document.getElementById("yolSelect").disabled = false;
+          }
+
           document.getElementById("yolSelect").innerHTML = '';
 
           var yoladiQuery = yollar.createQuery();
-          if (self.state.ilceselect !== '') {
-            yoladiQuery.where = "ILCEADI ='" + self.state.ilceselect + "'";
-          }
-          if (self.state.mahalleselect !== '') {
-            yoladiQuery.where = "MAHALLEADI ='" + self.state.mahalleselect + "'";
-          }
+          yoladiQuery.where = "ILCEADI ='" + self.state.ilceselect + "' AND MAHALLEADI ='" + self.state.mahalleselect + "'";
           yoladiQuery.outFields = ["YOLADI"];
           yoladiQuery.returnGeometry = false;
           yoladiQuery.returnDistinctValues = true;
@@ -408,10 +356,10 @@ export class WebMapView extends React.Component {
           yollar.queryFeatures(yoladiQuery)
             .then(function (response) {
 
-              const s = document.createElement('option');
-              s.value = "";
-              s.innerText = "TÜMÜ";
-              document.getElementById("yolSelect").appendChild(s);
+              const yolelement = document.createElement('option');
+              yolelement.value = "";
+              yolelement.innerText = "Yol Seçin";
+              document.getElementById("yolSelect").appendChild(yolelement);
 
               for (let index = 0; index < response.features.length; index++) {
                 const element = response.features[index].attributes.YOLADI;
@@ -431,7 +379,7 @@ export class WebMapView extends React.Component {
           })
 
           var gotoQuery = yollar.createQuery();
-          gotoQuery.where = "YOLADI = '" + self.state.yolselect + "'"
+          gotoQuery.where = "ILCEADI ='" + self.state.ilceselect + "' AND MAHALLEADI ='" + self.state.mahalleselect + "' AND YOLADI = '" + self.state.yolselect + "'";
 
           yollar.queryFeatures(gotoQuery)
             .then(function (response) {
