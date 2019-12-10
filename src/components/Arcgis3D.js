@@ -7,9 +7,12 @@ export class WebMapView extends React.Component {
     super(props);
     this.mapRef = React.createRef();
     this.state = {
-      ilceselect: '',
-      mahalleselect: '',
-      yolselect: '',
+      yolsorguilceselect: '',
+      yolsorgumahalleselect: '',
+      yolsorguyolselect: '',
+      kapisorguilceselect: '',
+      kapisorgumahalleselect: '',
+      kapisorgukapiselect: '',
     }
   }
 
@@ -55,6 +58,7 @@ export class WebMapView extends React.Component {
         Graphic,
         Query
       ]) => {
+        
         var map = new Map({
           basemap: "satellite",
           ground: "world-elevation"
@@ -154,7 +158,7 @@ export class WebMapView extends React.Component {
             {
               type: "icon",
               resource: {
-                href: "/door.png"
+                href: "./door.png"
               },
               size: 25,
               outline: {
@@ -213,175 +217,173 @@ export class WebMapView extends React.Component {
 
         var SorguExpand = new Expand({
           view: this.view,
-          content: document.getElementById("optionsDiv"),
+          content: document.getElementById("yolsorgudiv"),
           group: "top-right"
         });
 
         var locateWidget = new Locate({
           view: this.view,
-          graphic: new Graphic({
-            symbol: { type: "simple-marker" }
-          })
+         
         });
 
         function yolSorguInit() {
 
           self.setState({
-            ilceselect: '',
-            mahalleselect: '',
-            yolselect: ''
+            yolsorguilceselect: '',
+            yolsorgumahalleselect: '',
+            yolsorguyolselect: ''
           })
 
           if (yolsecim) {
             yolsecim.remove();
           }
 
-          document.getElementById("ilceSelect").innerHTML = '';
-          document.getElementById("mahalleSelect").innerHTML = '';
-          document.getElementById("mahalleSelect").disabled = true;
-          document.getElementById("yolSelect").innerHTML = '';
-          document.getElementById("yolSelect").disabled = true;
+          document.getElementById("yolsorguilceSelect").innerHTML = '';
+          document.getElementById("yolsorgumahalleSelect").innerHTML = '';
+          document.getElementById("yolsorgumahalleSelect").disabled = true;
+          document.getElementById("yolsorguyolSelect").innerHTML = '';
+          document.getElementById("yolsorguyolSelect").disabled = true;
 
-          var ilceadiQuery = yollar.createQuery();
-          ilceadiQuery.outFields = ["ILCEADI"];
-          ilceadiQuery.returnGeometry = false;
-          ilceadiQuery.returnDistinctValues = true;
-          ilceadiQuery.orderByFields = ["ILCEADI ASC"];
+          var yolsorguilceadiQuery = yollar.createQuery();
+          yolsorguilceadiQuery.outFields = ["ILCEADI"];
+          yolsorguilceadiQuery.returnGeometry = false;
+          yolsorguilceadiQuery.returnDistinctValues = true;
+          yolsorguilceadiQuery.orderByFields = ["ILCEADI ASC"];
 
-          yollar.queryFeatures(ilceadiQuery)
+          yollar.queryFeatures(yolsorguilceadiQuery)
             .then(function (response) {
 
-              const ilceelement = document.createElement('option');
-              ilceelement.value = "";
-              ilceelement.innerText = "İlçe Seçin";
-              document.getElementById("ilceSelect").appendChild(ilceelement);
+              const yolsorguilceelement = document.createElement('option');
+              yolsorguilceelement.value = "";
+              yolsorguilceelement.innerText = "İlçe Seçin";
+              document.getElementById("yolsorguilceSelect").appendChild(yolsorguilceelement);
 
               for (let index = 0; index < response.features.length; index++) {
                 const element = response.features[index].attributes.ILCEADI;
                 const s = document.createElement('option');
                 s.value = element;
                 s.innerText = element;
-                document.getElementById("ilceSelect").appendChild(s);
+                document.getElementById("yolsorguilceSelect").appendChild(s);
 
               }
             });
 
-          const mahalleelement = document.createElement('option');
-          mahalleelement.value = "";
-          mahalleelement.innerText = "Mahalle Seçin";
-          document.getElementById("mahalleSelect").appendChild(mahalleelement);
+          const yolsorgumahalleelement = document.createElement('option');
+          yolsorgumahalleelement.value = "";
+          yolsorgumahalleelement.innerText = "Mahalle Seçin";
+          document.getElementById("yolsorgumahalleSelect").appendChild(yolsorgumahalleelement);
 
-          const yolelement = document.createElement('option');
-          yolelement.value = "";
-          yolelement.innerText = "Yol Seçin";
-          document.getElementById("yolSelect").appendChild(yolelement);
+          const yolsorguyolelement = document.createElement('option');
+          yolsorguyolelement.value = "";
+          yolsorguyolelement.innerText = "Yol Seçin";
+          document.getElementById("yolsorguyolSelect").appendChild(yolsorguyolelement);
 
         };
 
         yolSorguInit();
 
-        document.getElementById("ilceSelect").addEventListener("change", ilceSelectFunction);
-        document.getElementById("mahalleSelect").addEventListener("change", mahalleSelectFunction);
-        document.getElementById("yolSelect").addEventListener("change", yolSelectFunction);
-        document.getElementById("yolSorguResetButton").addEventListener("click", yolSorguInit);
+        document.getElementById("yolsorguilceSelect").addEventListener("change", yolsorguilceSelectFunction);
+        document.getElementById("yolsorgumahalleSelect").addEventListener("change", yolsorgumahalleSelectFunction);
+        document.getElementById("yolsorguyolSelect").addEventListener("change", yolsorguyolSelectFunction);
+        document.getElementById("yolsorguresetButton").addEventListener("click", yolSorguInit);
 
 
-        function ilceSelectFunction() {
+        function yolsorguilceSelectFunction() {
           self.setState({
-            ilceselect: document.getElementById("ilceSelect").value
+            yolsorguilceselect: document.getElementById("yolsorguilceSelect").value
           })
-          document.getElementById("mahalleSelect").innerHTML = '';
-          if (document.getElementById("ilceSelect").value === '') {
-            document.getElementById("mahalleSelect").disabled = true;
+          document.getElementById("yolsorgumahalleSelect").innerHTML = '';
+          if (document.getElementById("yolsorguilceSelect").value === '') {
+            document.getElementById("yolsorgumahalleSelect").disabled = true;
           } else {
-            document.getElementById("mahalleSelect").disabled = false;
+            document.getElementById("yolsorgumahalleSelect").disabled = false;
           }
-          document.getElementById("yolSelect").innerHTML = '';
-          document.getElementById("yolSelect").disabled = true;
+          document.getElementById("yolsorguyolSelect").innerHTML = '';
+          document.getElementById("yolsorguyolSelect").disabled = true;
 
-          var mahalleQuery = yollar.createQuery();
-          if (self.state.ilceselect !== '') {
-            mahalleQuery.where = "ILCEADI ='" + self.state.ilceselect + "'";
+          var yolsorgumahalleQuery = yollar.createQuery();
+          if (self.state.yolsorguilceselect !== '') {
+            yolsorgumahalleQuery.where = "ILCEADI ='" + self.state.yolsorguilceselect + "'";
           }
-          mahalleQuery.outFields = ["MAHALLEADI"];
-          mahalleQuery.returnGeometry = false;
-          mahalleQuery.returnDistinctValues = true;
-          mahalleQuery.orderByFields = ["MAHALLEADI ASC"];
+          yolsorgumahalleQuery.outFields = ["MAHALLEADI"];
+          yolsorgumahalleQuery.returnGeometry = false;
+          yolsorgumahalleQuery.returnDistinctValues = true;
+          yolsorgumahalleQuery.orderByFields = ["MAHALLEADI ASC"];
 
-          yollar.queryFeatures(mahalleQuery)
+          yollar.queryFeatures(yolsorgumahalleQuery)
             .then(function (response) {
 
-              const mahalleelement = document.createElement('option');
-              mahalleelement.value = "";
-              mahalleelement.innerText = "Mahalle Seçin";
-              document.getElementById("mahalleSelect").appendChild(mahalleelement);
+              const yolsorgumahalleelement = document.createElement('option');
+              yolsorgumahalleelement.value = "";
+              yolsorgumahalleelement.innerText = "Mahalle Seçin";
+              document.getElementById("yolsorgumahalleSelect").appendChild(yolsorgumahalleelement);
 
               for (let index = 0; index < response.features.length; index++) {
                 const element = response.features[index].attributes.MAHALLEADI;
                 const s = document.createElement('option');
                 s.value = element;
                 s.innerText = element;
-                document.getElementById("mahalleSelect").appendChild(s);
+                document.getElementById("yolsorgumahalleSelect").appendChild(s);
 
               }
             });
 
-          const yolelement = document.createElement('option');
-          yolelement.value = "";
-          yolelement.innerText = "Yol Seçin";
-          document.getElementById("yolSelect").appendChild(yolelement);
+          const yolsorguyolelement = document.createElement('option');
+          yolsorguyolelement.value = "";
+          yolsorguyolelement.innerText = "Yol Seçin";
+          document.getElementById("yolsorguyolSelect").appendChild(yolsorguyolelement);
           
         };
 
-        function mahalleSelectFunction() {
+        function yolsorgumahalleSelectFunction() {
           self.setState({
-            mahalleselect: document.getElementById("mahalleSelect").value
+            yolsorgumahalleselect: document.getElementById("yolsorgumahalleSelect").value
           })
 
-          if (document.getElementById("mahalleSelect").value === '') {
-            document.getElementById("yolSelect").disabled = true;
+          if (document.getElementById("yolsorgumahalleSelect").value === '') {
+            document.getElementById("yolsorguyolSelect").disabled = true;
           } else {
-            document.getElementById("yolSelect").disabled = false;
+            document.getElementById("yolsorguyolSelect").disabled = false;
           }
 
-          document.getElementById("yolSelect").innerHTML = '';
+          document.getElementById("yolsorguyolSelect").innerHTML = '';
 
-          var yoladiQuery = yollar.createQuery();
-          yoladiQuery.where = "ILCEADI ='" + self.state.ilceselect + "' AND MAHALLEADI ='" + self.state.mahalleselect + "'";
-          yoladiQuery.outFields = ["YOLADI"];
-          yoladiQuery.returnGeometry = false;
-          yoladiQuery.returnDistinctValues = true;
-          yoladiQuery.orderByFields = ["YOLADI ASC"];
+          var yolsorguyoladiQuery = yollar.createQuery();
+          yolsorguyoladiQuery.where = "ILCEADI ='" + self.state.yolsorguilceselect + "' AND MAHALLEADI ='" + self.state.yolsorgumahalleselect + "'";
+          yolsorguyoladiQuery.outFields = ["YOLADI"];
+          yolsorguyoladiQuery.returnGeometry = false;
+          yolsorguyoladiQuery.returnDistinctValues = true;
+          yolsorguyoladiQuery.orderByFields = ["YOLADI ASC"];
 
-          yollar.queryFeatures(yoladiQuery)
+          yollar.queryFeatures(yolsorguyoladiQuery)
             .then(function (response) {
 
-              const yolelement = document.createElement('option');
-              yolelement.value = "";
-              yolelement.innerText = "Yol Seçin";
-              document.getElementById("yolSelect").appendChild(yolelement);
+              const yolsorguyolelement = document.createElement('option');
+              yolsorguyolelement.value = "";
+              yolsorguyolelement.innerText = "Yol Seçin";
+              document.getElementById("yolsorguyolSelect").appendChild(yolsorguyolelement);
 
               for (let index = 0; index < response.features.length; index++) {
                 const element = response.features[index].attributes.YOLADI;
                 const s = document.createElement('option');
                 s.value = element;
                 s.innerText = element;
-                document.getElementById("yolSelect").appendChild(s);
+                document.getElementById("yolsorguyolSelect").appendChild(s);
 
               }
             });
 
         };
 
-        function yolSelectFunction() {
+        function yolsorguyolSelectFunction() {
           self.setState({
-            yolselect: document.getElementById("yolSelect").value
+            yolsorguyolselect: document.getElementById("yolsorguyolSelect").value
           })
 
-          var gotoQuery = yollar.createQuery();
-          gotoQuery.where = "ILCEADI ='" + self.state.ilceselect + "' AND MAHALLEADI ='" + self.state.mahalleselect + "' AND YOLADI = '" + self.state.yolselect + "'";
+          var yolgotoQuery = yollar.createQuery();
+          yolgotoQuery.where = "ILCEADI ='" + self.state.yolsorguilceselect + "' AND MAHALLEADI ='" + self.state.yolsorgumahalleselect + "' AND YOLADI = '" + self.state.yolsorguyolselect + "'";
 
-          yollar.queryFeatures(gotoQuery)
+          yollar.queryFeatures(yolgotoQuery)
             .then(function (response) {
               self.view.goTo(response.features).then(function () {
                 yolSecim(response.features)
@@ -416,21 +418,21 @@ export class WebMapView extends React.Component {
           backgroundImage: `url(${LogoImage})`, textAlign: 'center',
           width: '90px', height: '90px', boxShadow: '0 0 0', display: 'none'
         }}>
-          <div className="esri-widget" id="optionsDiv" style={{ padding: '10px', width: '300px' }}>
+          <div className="esri-widget" id="yolsorgudiv" style={{ padding: '10px', width: '300px' }}>
             <h3>Sorgu</h3>
             <label>İlçe</label>
-            <select className="esri-select" id="ilceSelect" defaultValue={''}>
+            <select className="esri-select" id="yolsorguilceSelect" defaultValue={''}>
             </select>
             <br />
             <label>Mahalle</label>
-            <select className="esri-select" id="mahalleSelect" defaultValue={''}>
+            <select className="esri-select" id="yolsorgumahalleSelect" defaultValue={''}>
             </select>
             <br />
             <label>Yol</label>
-            <select className="esri-select" id="yolSelect" defaultValue={''}>
+            <select className="esri-select" id="yolsorguyolSelect" defaultValue={''}>
             </select>
             <br />
-            <button className="esri-button" id="yolSorguResetButton">Sorguyu Sıfırla</button>
+            <button className="esri-button" id="yolsorguresetButton">Sorguyu Sıfırla</button>
           </div>
 
         </div>
