@@ -414,10 +414,10 @@ export class Arcgis3D extends React.Component {
         }
       });
 
-      const yolsorgukapielement = document.createElement('option');
-      yolsorgukapielement.value = "";
-      yolsorgukapielement.innerText = "Kapı Seçin";
-      document.getElementById("yolsorgukapiSelect").appendChild(yolsorgukapielement);
+    const yolsorgukapielement = document.createElement('option');
+    yolsorgukapielement.value = "";
+    yolsorgukapielement.innerText = "Kapı Seçin";
+    document.getElementById("yolsorgukapiSelect").appendChild(yolsorgukapielement);
 
   };
 
@@ -497,6 +497,7 @@ export class Arcgis3D extends React.Component {
       if (self.state.kapisecim) {
         self.state.kapisecim.remove();
       }
+
       self.setState({
         kapisecim: layerView.highlight(
           features
@@ -518,13 +519,16 @@ export class Arcgis3D extends React.Component {
     this.state.kapikatman.queryFeatures(kapigotoQuery)
       .then(function (response) {
         var subself = self;
-        self.state.view.goTo(response.features).then(function () {
+        self.state.view.goTo({
+          target: response.features,
+          zoom: 19
+        }).then(function () {
           subself.kapiSecim(response.features)
         });
       });
-   
+
   };
-  
+
 
   render() {
     return (
@@ -552,7 +556,7 @@ export class Arcgis3D extends React.Component {
                 <label>Kapı</label>
                 <select className="esri-select" id="yolsorgukapiSelect" defaultValue={''}>
                 </select>
-                <br/>
+                <br />
                 <button className="esri-button" id="yolsorguresetButton" onClick={this.yolSorguInit}>Sorguyu Sıfırla</button>
               </Tab>
               <Tab eventKey="kisibilgisi" title="Kişi Bilgisi" disabled>
