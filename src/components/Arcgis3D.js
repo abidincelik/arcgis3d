@@ -478,8 +478,11 @@ export class Arcgis3D extends React.Component {
 
       if (self.state.yolsecim) {
         self.state.yolsecim.remove();
+      }
+      if (self.state.kapisecim) {
         self.state.kapisecim.remove();
       }
+
       self.setState({
         yolsecim: layerView.highlight(
           features
