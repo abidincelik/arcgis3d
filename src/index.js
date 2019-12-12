@@ -1,12 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { WebMapView } from './components/Arcgis3D';
-import CalciteThemeProvider from 'calcite-react/CalciteThemeProvider';
+import { Arcgis3D } from './components/Arcgis3D';
 
 ReactDOM.render(
-    <CalciteThemeProvider>
-        <WebMapView />
-    </CalciteThemeProvider>,
+        <Arcgis3D />,
     document.getElementById('root'),
 );
