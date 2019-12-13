@@ -1,5 +1,6 @@
 import React from 'react';
 import LogoImage from '../logo.png'
+import MuskiLogo from '../muskilogo.png'
 import { loadModules, loadCss } from 'esri-loader';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -16,6 +17,8 @@ export class Arcgis3D extends React.Component {
       binakatman: null,
       kapikatman: null,
       muskiustuapikatman: null,
+      mbbbinakatman: null,
+      muskibinakatman: null,
       locatewidget: null,
       katmanlistesi: null,
       katmanlistesiexpand: null,
@@ -162,6 +165,106 @@ export class Arcgis3D extends React.Component {
 
           }),
 
+          mbbbinakatman: new FeatureLayer({
+            title: "MBB Hizmet Binaları",
+            url: "https://muglacbs.mugla.bel.tr/cbs/rest/services/Hizmet_Binalari/Hizmet_Binalari_Nokta/MapServer/0",
+            outFields: ["ilce", "ad", "adres", "yapi_id"],
+            popupTemplate: {
+              title: "MBB Hizmet Bina Bilgisi",
+              content: "<p>İlçe : {ilce}</p><p>Bina Adı : {ad}</p><p>Adres : {adres}</p><p>Yapı ID : {yapi_id}</p>"
+            },
+            elevationInfo: {
+              mode: "relative-to-scene"
+            },
+            screenSizePerspectiveEnabled: false,
+            featureReduction: {
+              type: "selection"
+            },
+            renderer: {
+              symbol: {
+                type: "point-3d",
+                symbolLayers: [
+                  {
+                    type: "icon",
+                    resource: {
+                      href: LogoImage
+                    },
+                    size: 25,
+                    outline: {
+                      color: "black",
+                      size: 2
+                    }
+                  }
+                ],
+                verticalOffset: {
+                  screenLength: 10,
+                  maxWorldLength: 100,
+                  minWorldLength: 10
+                },
+                callout: {
+                  type: "line",
+                  color: "#515D71",
+                  size: 2,
+                  border: {
+                    color: "black"
+                  }
+                }
+              },
+              type: "simple"
+            }
+
+          }),
+
+          muskibinakatman: new FeatureLayer({
+            title: "MUSKİ Hizmet Binaları",
+            url: "https://muglacbs.mugla.bel.tr/cbs/rest/services/Hizmet_Binalari/Hizmet_Binalari_Muski_Nokta/MapServer/0",
+            outFields: ["ADI"],
+            popupTemplate: {
+              title: "MUSKİ Hizmet Bina Bilgisi",
+              content: "<p>Bina Adı : {ADI}</p>"
+            },
+            elevationInfo: {
+              mode: "relative-to-scene"
+            },
+            screenSizePerspectiveEnabled: false,
+            featureReduction: {
+              type: "selection"
+            },
+            renderer: {
+              symbol: {
+                type: "point-3d",
+                symbolLayers: [
+                  {
+                    type: "icon",
+                    resource: {
+                      href: MuskiLogo
+                    },
+                    size: 25,
+                    outline: {
+                      color: "black",
+                      size: 2
+                    }
+                  }
+                ],
+                verticalOffset: {
+                  screenLength: 10,
+                  maxWorldLength: 100,
+                  minWorldLength: 10
+                },
+                callout: {
+                  type: "line",
+                  color: "#515D71",
+                  size: 2,
+                  border: {
+                    color: "black"
+                  }
+                }
+              },
+              type: "simple"
+            }
+
+          }),
+
           muskiustuapikatman: new FeatureLayer({
             title: "MUSKİ Üst Yapı",
             url: "https://cbs.muski.gov.tr/arcgis/rest/services/CANLI/UST_YAPI/MapServer/0",
@@ -175,10 +278,12 @@ export class Arcgis3D extends React.Component {
 
         })
 
-        this.state.map.add(this.state.binakatman);
-        this.state.map.add(this.state.yolkatman);
-        this.state.map.add(this.state.kapikatman);
         this.state.map.add(this.state.muskiustuapikatman);
+        this.state.map.add(this.state.muskibinakatman);
+        this.state.map.add(this.state.mbbbinakatman);
+        this.state.map.add(this.state.kapikatman);
+        this.state.map.add(this.state.yolkatman);
+        this.state.map.add(this.state.binakatman);
 
         this.setState({
           view: new SceneView({
@@ -472,6 +577,29 @@ export class Arcgis3D extends React.Component {
       });
   };
 
+  yolsorgukapiSelectFunction = () => {
+
+    var self = this;
+    this.setState({
+      yolsorgukapiselect: document.getElementById("yolsorgukapiSelect").value
+    });
+
+    var kapigotoQuery = this.state.kapikatman.createQuery();
+    kapigotoQuery.where = "ILCEADI ='" + this.state.yolsorguilceselect + "' AND MAHALLEADI ='" + this.state.yolsorgumahalleselect + "' AND YOLADI = '" + this.state.yolsorguyolselect + "' AND KAPINO = '" + this.state.yolsorgukapiselect + "'";
+
+    this.state.kapikatman.queryFeatures(kapigotoQuery)
+      .then(function (response) {
+        var subself = self;
+        self.state.view.goTo({
+          target: response.features,
+          zoom: 19
+        }).then(function () {
+          subself.kapiSecim(response.features)
+        });
+      });
+
+  };
+
   yolSecim = (features) => {
     var self = this;
     this.state.view.whenLayerView(this.state.yolkatman).then(function (layerView) {
@@ -509,30 +637,6 @@ export class Arcgis3D extends React.Component {
     })
   };
 
-  yolsorgukapiSelectFunction = () => {
-
-    var self = this;
-    this.setState({
-      yolsorgukapiselect: document.getElementById("yolsorgukapiSelect").value
-    });
-
-    var kapigotoQuery = this.state.kapikatman.createQuery();
-    kapigotoQuery.where = "ILCEADI ='" + this.state.yolsorguilceselect + "' AND MAHALLEADI ='" + this.state.yolsorgumahalleselect + "' AND YOLADI = '" + this.state.yolsorguyolselect + "' AND KAPINO = '" + this.state.yolsorgukapiselect + "'";
-
-    this.state.kapikatman.queryFeatures(kapigotoQuery)
-      .then(function (response) {
-        var subself = self;
-        self.state.view.goTo({
-          target: response.features,
-          zoom: 19
-        }).then(function () {
-          subself.kapiSecim(response.features)
-        });
-      });
-
-  };
-
-
   render() {
     return (
       <div className="webmap" ref={this.mapRef} style={{ width: '100vw', height: '100vh' }}>
@@ -562,7 +666,7 @@ export class Arcgis3D extends React.Component {
                 <br />
                 <button className="esri-button" id="yolsorguresetButton" onClick={this.yolSorguInit}>Sorguyu Sıfırla</button>
               </Tab>
-              <Tab eventKey="kisibilgisi" title="Kişi Bilgisi" disabled>
+              <Tab eventKey="kisibilgisi" title="Hane Bilgisi" disabled>
               </Tab>
             </Tabs>
           </div>
