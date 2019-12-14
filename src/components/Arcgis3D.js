@@ -19,6 +19,7 @@ export class Arcgis3D extends React.Component {
       muskiustuapikatman: null,
       mbbbinakatman: null,
       muskibinakatman: null,
+      muskiicmesukatman: null,
       locatewidget: null,
       katmanlistesi: null,
       katmanlistesiexpand: null,
@@ -274,11 +275,22 @@ export class Arcgis3D extends React.Component {
               content: "<p>Yapı Cinsi : {CINS}</p><p>Yapı Adı : {ADI}</p>"
             },
             labelingInfo: false
-          })
+          }),
+
+          muskiicmesukatman: new FeatureLayer({
+            title: "MUSKİ İçme Suyu Hatları",
+            url: "https://muglacbs.mugla.bel.tr/cbs/rest/services/MUSKI/icmesuyu_hat/MapServer/0",
+            outFields: ["ILCE_ADI","MALZEME", "CAP", "BASINC_SINIFI"],
+            popupTemplate: {
+              title: "MUSKİ İçme Suyu Hattı",
+              content: "<p>İlçe Adı : {ILCE_ADI}</p><p>Malzeme : {MALZEME}</p><p>Çap : {CAP}</p><p>Basınç Sınıfı : {BASINC_SINIFI}</p>"
+            }
+          }),
 
         })
 
         this.state.map.add(this.state.muskiustuapikatman);
+        this.state.map.add(this.state.muskiicmesukatman);
         this.state.map.add(this.state.muskibinakatman);
         this.state.map.add(this.state.mbbbinakatman);
         this.state.map.add(this.state.kapikatman);
