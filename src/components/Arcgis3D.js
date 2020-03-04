@@ -104,7 +104,7 @@ export class Arcgis3D extends React.Component {
                   {
                     type: "fill",
                     material: {
-                      color: [255, 170, 2]
+                      color: [255, 85, 1]
                     },
                     edges: {
                       type: "solid",
